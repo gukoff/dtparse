@@ -1,14 +1,14 @@
+/dist/wheels/
 /target/
 **/*.rs.bk
 .idea
 .python-version
 __pycache__
-*.so
 Cargo.lock
 .benchmarks/
 .cache/
 *.egg-info/
 projectFilesBackup/
+tests.svg
 benchmark*.svg
 build/
-*py[cdo]
