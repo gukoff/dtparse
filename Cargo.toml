@@ -4,7 +4,7 @@ name = "python-dtparse"
 version = "1.0.0"
 
 [dependencies]
-pyo3 = "0.2.5"
+pyo3 = "0.2.6"
 chrono = "0.4"
 
 [lib]

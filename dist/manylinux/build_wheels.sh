@@ -7,8 +7,9 @@ export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$HOME/rust/lib"
 mkdir /tmp/wheels
 
 # Compile wheels
-for PYBIN in /opt/python/cp35-cp35m/bin; do
-    export PYTHON_LIB=$(${PYBIN}/python -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR'))")
+for PYBIN in /opt/python/cp{27,35,36}*/bin; do
+    export PYTHON_SYS_EXECUTABLE="$PYBIN/python"
+    export PYTHON_LIB=$("${PYBIN}/python" -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR'))")
     export LIBRARY_PATH="$LIBRARY_PATH:$PYTHON_LIB"
     export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$PYTHON_LIB"
 
