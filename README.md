@@ -3,7 +3,10 @@
 A fast alternative to `datetime.strptime` written in Rust.
 Uses [chrono](https://github.com/chronotope/chrono) under the cover. Binds Rust to Python via [PyO3](https://github.com/PyO3/pyo3).
 
-It isn't fully compatible with `strptime` and requires hours and minutes to be present in the template.
+It isn't fully compatible with `strptime`. For example, it requires hours and minutes to be present in the template. 
+Also, the specifiers are a bit different from [Python's](https://docs.python.org/2/library/datetime.html#strftime-and-strptime-behavior). 
+The full list of allowed specifiers can be found in [chrono's docs](https://docs.rs/chrono/0.4.1/chrono/format/strftime/index.html).
+
 
 This library is an example extension to my talk on Rust extensions on [Yandex Pytup](https://events.yandex.ru/events/meetings/28-03-2018/). 
 You can use it as a template for your own extension. 
