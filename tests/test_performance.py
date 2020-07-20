@@ -9,7 +9,7 @@ import dtparse
 
 def test_ciso8601(benchmark):
     assert benchmark.pedantic(
-        ciso8601.parse_datetime_unaware, args=('2018-12-31T23:59:58', ),
+        ciso8601.parse_datetime, args=('2018-12-31T23:59:58', ),
         rounds=10 ** 6, iterations=100
     ) == datetime(2018, 12, 31, 23, 59, 58)
 

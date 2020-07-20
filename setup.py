@@ -27,13 +27,13 @@ class PyTest(TestCommand):
         raise SystemExit(errno)
 
 
-setup_requires = ['setuptools-rust>=0.6.0']
+setup_requires = ['setuptools-rust>=0.10.3']
 install_requires = []
-tests_require = install_requires + ['pytest', 'pytest-benchmark']
+tests_require = install_requires + ['ciso8601', 'pytest', 'pytest-benchmark[histogram]']
 
 setup(
     name='dtparse',
-    version='1.0.0',
+    version='1.1.0',
     classifiers=[
         'License :: OSI Approved :: MIT License',
         'Development Status :: 3 - Alpha',

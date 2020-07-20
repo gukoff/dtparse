@@ -12,3 +12,4 @@ projectFilesBackup/
 benchmark*.svg
 build/
 *py[cdo]
+venv/

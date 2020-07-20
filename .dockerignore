@@ -12,3 +12,4 @@ projectFilesBackup/
 tests.svg
 benchmark*.svg
 build/
+venv/
