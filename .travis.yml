@@ -1,0 +1,30 @@
+language: python
+
+matrix:
+  include:
+    - sudo: required
+      services:
+        - docker
+      env:
+        - PIP=pip
+        - PYTHON=python
+    - os: osx
+      language: generic
+      env:
+        - PIP=pip3
+        - PYTHON=python3
+
+env:
+  global:
+    - TWINE_USERNAME=gukoff-twine
+    # Note: TWINE_PASSWORD is set in Travis settings
+
+script:
+  - $PIP install cibuildwheel setuptools_rust
+  - export CIBW_BUILD='cp37-*'
+  - export CIBW_BEFORE_BUILD='bash {project}/dist/before_ci.sh'
+  - export CIBW_ENVIRONMENT='PATH="$HOME/.cargo/bin:$PATH"'
+  - cibuildwheel --output-dir wheelhouse
+  - |
+    $PIP install twine
+    $PYTHON -m twine upload --repository-url https://test.pypi.org/legacy/ wheelhouse/*.whl
