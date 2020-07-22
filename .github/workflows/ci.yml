@@ -1,0 +1,113 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - '**'
+  pull_request: {}
+
+jobs:
+  build:
+    name: build py${{ matrix.python-version }} on ${{ matrix.platform || matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu
+          - macos
+          - windows
+        python-version:
+          - '3.6'
+          - '3.7'
+          - '3.8'
+          - '3.9'
+        wheels-dir:
+          - '.wheels'
+        include:
+          - os: ubuntu
+            platform: linux
+          - os: windows
+            ls: dir
+          - python-version: 3.6
+            cibw-version: cp36
+          - python-version: 3.7
+            cibw-version: cp37
+          - python-version: 3.8
+            cibw-version: cp38
+          - python-version: 3.9
+            cibw-version: cp39
+
+    runs-on: ${{ format('{0}-latest', matrix.os) }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: set up python
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: set up rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          profile: minimal
+          default: true
+          override: true
+
+      - name: install python dependencies
+        run: |
+          pip install -U setuptools wheel cibuildwheel==1.7.0
+
+      - name: build sdist
+        run: |
+          pip install -U setuptools-rust
+          python setup.py sdist
+
+      - name: create wheels dir
+        run: |
+          mkdir ${{ matrix.wheels-dir }}
+
+      - name: build ${{ matrix.platform || matrix.os }} binaries
+        run: python -m cibuildwheel --output-dir ${{ matrix.wheels-dir }}
+        env:
+          CIBW_BUILD: '${{ matrix.cibw-version }}-*'
+          CIBW_SKIP: '*-win32'
+          CIBW_PLATFORM: ${{ matrix.platform || matrix.os }}
+          CIBW_ENVIRONMENT: 'PATH="$HOME/.cargo/bin:$PATH"'
+          CIBW_ENVIRONMENT_WINDOWS: 'PATH="$UserProfile\.cargo\bin;$PATH"'
+          CIBW_BEFORE_BUILD: >
+            pip install -U setuptools-rust &&
+            rustup show
+          CIBW_BEFORE_BUILD_LINUX: >
+            pip install -U setuptools-rust &&
+            curl https://sh.rustup.rs -sSf | sh -s -- --profile=minimal -y &&
+            rustup show
+
+      - name: build windows 32bit binaries
+        if: matrix.os == 'windows'
+        run: cibuildwheel --output-dir ${{ matrix.wheels-dir }}
+        env:
+          CIBW_BUILD: '${{ matrix.cibw-version }}-win32'
+          CIBW_PLATFORM: windows
+          CIBW_ENVIRONMENT: 'PATH="$UserProfile\.cargo\bin;$PATH"'
+          CIBW_BEFORE_BUILD: >
+            pip install -U setuptools-rust &&
+            rustup default stable-i686-pc-windows-msvc &&
+            rustup show
+
+      - name: list wheels
+        run: ${{ matrix.ls || 'ls -lh' }} ${{ matrix.wheels-dir }}
+
+      - name: twine check
+        run: |
+          pip install -U twine
+          twine check ${{ matrix.wheels-dir }}/*
+
+      - name: upload to pypi
+        if: startsWith(github.ref, 'refs/tags/')
+        run: twine upload dist/*
+        env:
+          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
