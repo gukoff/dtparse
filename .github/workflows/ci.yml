@@ -58,11 +58,10 @@ jobs:
 
       - name: install python dependencies
         run: |
-          pip install -U setuptools wheel cibuildwheel==1.7.0
+          pip install -U setuptools setuptools-rust wheel cibuildwheel==1.7.0
 
       - name: build sdist
         run: |
-          pip install -U setuptools-rust
           python setup.py sdist
 
       - name: create wheels dir
@@ -78,10 +77,8 @@ jobs:
           CIBW_ENVIRONMENT: 'PATH="$HOME/.cargo/bin:$PATH"'
           CIBW_ENVIRONMENT_WINDOWS: 'PATH="$UserProfile\.cargo\bin;$PATH"'
           CIBW_BEFORE_BUILD: >
-            pip install -U setuptools-rust &&
             rustup show
           CIBW_BEFORE_BUILD_LINUX: >
-            pip install -U setuptools-rust &&
             curl https://sh.rustup.rs -sSf | sh -s -- --profile=minimal -y &&
             rustup show
 
@@ -93,7 +90,6 @@ jobs:
           CIBW_PLATFORM: windows
           CIBW_ENVIRONMENT: 'PATH="$UserProfile\.cargo\bin;$PATH"'
           CIBW_BEFORE_BUILD: >
-            pip install -U setuptools-rust &&
             rustup default stable-i686-pc-windows-msvc &&
             rustup show
 
@@ -105,9 +101,9 @@ jobs:
           pip install -U twine
           twine check ${{ matrix.wheels-dir }}/*
 
-      - name: upload to pypi
+      - name: upload to test pypi
         if: startsWith(github.ref, 'refs/tags/')
-        run: twine upload dist/*
+        run: twine upload ${{ matrix.wheels-dir }}/*
         env:
           TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
           TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}

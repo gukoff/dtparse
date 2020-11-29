@@ -33,15 +33,13 @@ tests_require = install_requires + ['ciso8601', 'pytest', 'pytest-benchmark[hist
 
 setup(
     name='dtparse',
-    version='1.1.0',
+    version='1.1.1',
     classifiers=[
         'License :: OSI Approved :: MIT License',
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
         'Programming Language :: Python',
         'Programming Language :: Rust',
-        'Operating System :: POSIX',
-        'Operating System :: MacOS :: MacOS X',
     ],
     packages=['dtparse'],
     rust_extensions=[RustExtension('dtparse._dtparse', 'Cargo.toml')],
