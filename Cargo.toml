@@ -1,11 +1,11 @@
 [package]
 authors = ["Konstantin Gukov <gukkos@gmail.com>"]
 name = "python-dtparse"
-version = "1.0.0"
+version = "1.2.0"
 
 [dependencies]
-pyo3 = "0.11.1"
-chrono = "0.4.13"
+pyo3 = "0.12.4"
+chrono = "0.4.19"
 
 [lib]
 name = "dtparse"

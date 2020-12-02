@@ -3,11 +3,11 @@ extern crate pyo3;
 extern crate chrono;
 
 use chrono::prelude::*;
-use pyo3::exceptions;
+use pyo3::exceptions::*;
 use pyo3::prelude::*;
 use pyo3::types::*;
 
-// https://pyo3.rs/v0.11.1/module.html
+// https://pyo3.rs/v0.12.4/module.html
 // This macro makes Rust compile a _dtparse.so binary in Python-compatible format.
 // Such a binary can be imported from Python just like a regular Python module.
 #[pymodule(_dtparse)]
@@ -20,11 +20,11 @@ fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
         let chrono_dt = Utc.datetime_from_str(str_datetime.as_str(), fmt.as_str());
 
         // In case chrono couldn't parse a datetime, raise a ValueError with chrono's error message.
-        // Because there are no exceptions in Rust, we return a ValueError instance here.
+        // Because there are no exceptions in Rust, we return a PyValueError instance here.
         // By convention, it will make PyO3 wrapper raise an exception in Python interpreter.
-        // https://pyo3.rs/v0.11.1/exception.html
+        // https://pyo3.rs/v0.12.4/exception.html
         if chrono_dt.is_err() {
-            return Err(exceptions::ValueError::py_err(
+            return Err(PyValueError::new_err(
                 chrono_dt.err().unwrap().to_string().to_owned(),
             ));
         }
