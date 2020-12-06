@@ -32,6 +32,7 @@ fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
         // In case everything's fine, get Rust datetime out of the result and transform
         // it into a Python datetime.
         let dt = chrono_dt.unwrap();
+        let microsecond = dt.nanosecond() / 1000;
         let result = PyDateTime::new(
             _py,
             dt.year(),
@@ -40,7 +41,7 @@ fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
             dt.hour() as u8,
             dt.minute() as u8,
             dt.second() as u8,
-            0,
+            microsecond as u32,
             None,
         );
         Ok(result?)

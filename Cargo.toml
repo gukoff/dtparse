@@ -11,6 +11,9 @@ chrono = "0.4.19"
 name = "dtparse"
 crate-type = ["cdylib"]
 
+[features]
+default = ["pyo3/extension-module"]
+
 [profile.dev]
 opt-level = 3
 
