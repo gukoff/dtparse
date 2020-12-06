@@ -33,7 +33,7 @@ tests_require = install_requires + ['ciso8601', 'pytest', 'pytest-benchmark[hist
 
 setup(
     name='dtparse',
-    version='1.2.1',
+    version='1.3.0',
     classifiers=[
         'License :: OSI Approved :: MIT License',
         'Development Status :: 3 - Alpha',
