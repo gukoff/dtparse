@@ -15,9 +15,9 @@ fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     // We fill this module with everything we want to make visible from Python.
 
     #[pyfn(m, "parse")]
-    fn parse(_py: Python, str_datetime: String, fmt: String) -> PyResult<&PyDateTime> {
+    fn parse<'a>(_py: Python<'a>, str_datetime: &str, fmt: &str) -> PyResult<&'a PyDateTime> {
         // Call chrono and ask it to parse the datetime for us
-        let chrono_dt = Utc.datetime_from_str(str_datetime.as_str(), fmt.as_str());
+        let chrono_dt = Utc.datetime_from_str(str_datetime, fmt);
 
         // In case chrono couldn't parse a datetime, raise a ValueError with chrono's error message.
         // Because there are no exceptions in Rust, we return a PyValueError instance here.
