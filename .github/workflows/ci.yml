@@ -51,7 +51,7 @@ jobs:
       - name: set up rust
         uses: actions-rs/toolchain@v1
         with:
-          toolchain: stable
+          toolchain: 1.50.0
           profile: minimal
           default: true
           override: true
