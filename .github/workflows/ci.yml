@@ -82,14 +82,9 @@ jobs:
             curl https://sh.rustup.rs -sSf | sh -s -- --profile=minimal -y &&
             rustup show
 
-      - name: build windows 32bit binaries (with retries)
-        uses: nick-invision/retry@v2.4.0
-        with:
-          timeout_minutes: 30
-          max_attempts: 20
-          retry_on: error
-          command: cibuildwheel --output-dir ${{ matrix.wheels-dir }}
+      - name: build windows 32bit binaries
         if: matrix.os == 'windows'
+        run: cibuildwheel --output-dir ${{ matrix.wheels-dir }}
         env:
           CIBW_BUILD: '${{ matrix.cibw-version }}-win32'
           CIBW_PLATFORM: windows
