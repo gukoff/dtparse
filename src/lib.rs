@@ -19,33 +19,29 @@ fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
         // Call chrono and ask it to parse the datetime for us
         let chrono_dt = Utc.datetime_from_str(str_datetime, fmt);
 
-        // In case chrono couldn't parse a datetime, raise a ValueError with chrono's error message.
-        // Because there are no exceptions in Rust, we return a PyValueError instance here.
-        // By convention, it will make PyO3 wrapper raise an exception in Python interpreter.
-        // https://pyo3.rs/v0.12.4/exception.html
-        if chrono_dt.is_err() {
-            return Err(PyValueError::new_err(
-                chrono_dt.err().unwrap().to_string().to_owned(),
-            ));
+        match chrono_dt {
+            // In case everything's fine, get Rust datetime out of the result and transform
+            // it into a Python datetime.
+            Ok(dt) => {
+                let microsecond = dt.nanosecond() / 1000;
+                PyDateTime::new(
+                    _py,
+                    dt.year(),
+                    dt.month() as u8,
+                    dt.day() as u8,
+                    dt.hour() as u8,
+                    dt.minute() as u8,
+                    dt.second() as u8,
+                    microsecond as u32,
+                    None,
+                )
+            }
+            // In case chrono couldn't parse a datetime, raise a ValueError with chrono's error message.
+            // Because there are no exceptions in Rust, we return a PyValueError instance here.
+            // By convention, it will make PyO3 wrapper raise an exception in Python interpreter.
+            // https://pyo3.rs/v0.12.4/exception.html
+            Err(e) => Err(PyValueError::new_err(e.to_string())),
         }
-
-        // In case everything's fine, get Rust datetime out of the result and transform
-        // it into a Python datetime.
-        let dt = chrono_dt.unwrap();
-        let microsecond = dt.nanosecond() / 1000;
-        let result = PyDateTime::new(
-            _py,
-            dt.year(),
-            dt.month() as u8,
-            dt.day() as u8,
-            dt.hour() as u8,
-            dt.minute() as u8,
-            dt.second() as u8,
-            microsecond as u32,
-            None,
-        );
-        Ok(result?)
     }
-
     Ok(())
 }
