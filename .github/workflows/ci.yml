@@ -87,7 +87,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: py${{ matrix.python-version }}_${{ matrix.platform || matrix.os }}.svg
-          path: /**/benchmark_*.svg
+          path: benchmark_*.svg
 
       - name: build windows 32bit binaries
         if: matrix.os == 'windows'
