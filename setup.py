@@ -45,6 +45,7 @@ setup(
     rust_extensions=[RustExtension('dtparse._dtparse', 'Cargo.toml')],
     install_requires=install_requires,
     tests_require=tests_require,
+    extras_require={'test': tests_require},
     setup_requires=setup_requires,
     include_package_data=True,
     zip_safe=False,
