@@ -87,10 +87,10 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: py${{ matrix.python-version }}_${{ matrix.platform || matrix.os }}.svg
-          path: dtparse/**/benchmark_*.svg
-
-      - name: debug the action
-        uses: lhotari/action-upterm@v1
+          path: /root/benchmark_*.svg
+#
+#      - name: debug the action
+#        uses: lhotari/action-upterm@v1
 
       - name: build windows 32bit binaries
         if: matrix.os == 'windows'
